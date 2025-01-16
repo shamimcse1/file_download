@@ -69,7 +69,6 @@ class FileDownloader {
   // Save file to the Download folder
   Future<void> downloadFile(String url, String fileName) async {
     // Request storage permissions
-    PermissionStatus permissionStatus = await Permission.storage.request();
     final plugin = DeviceInfoPlugin();
     final android = await plugin.androidInfo;
 
