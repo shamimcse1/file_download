@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:dio/dio.dart';
 import 'dart:typed_data' as typed_data; // Alias the import for clarity
+import 'package:device_info_plus/device_info_plus.dart';
 
 var status = "Waiting to download...";
 
@@ -46,10 +47,11 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
             onPressed: () async {
               FileDownloader fileDownloader = FileDownloader();
-              Random random =  Random();
+              Random random = Random();
               int randomNumber = random.nextInt(100);
               var fileName = 'MyFIle$randomNumber.pdf';
-              await fileDownloader.downloadFile('https://gbihr.org/images/docs/test.pdf', fileName);
+              await fileDownloader.downloadFile(
+                  'https://gbihr.org/images/docs/test.pdf', fileName);
             },
             child: const Text("Download File"),
           ),
@@ -68,8 +70,14 @@ class FileDownloader {
   Future<void> downloadFile(String url, String fileName) async {
     // Request storage permissions
     PermissionStatus permissionStatus = await Permission.storage.request();
+    final plugin = DeviceInfoPlugin();
+    final android = await plugin.androidInfo;
 
-    if (permissionStatus.isGranted) {
+    final storageStatus = android.version.sdkInt < 33
+        ? await Permission.storage.request()
+        : PermissionStatus.granted;
+
+    if (storageStatus == PermissionStatus.granted) {
       try {
         if (Platform.isAndroid) {
           // Using Dio to download the file as bytes
@@ -84,8 +92,12 @@ class FileDownloader {
       } catch (e) {
         print("Error downloading file: $e");
       }
-    } else {
-      print("Storage permission denied.");
+    }
+    if (storageStatus == PermissionStatus.denied) {
+      print("denied");
+    }
+    if (storageStatus == PermissionStatus.permanentlyDenied) {
+      openAppSettings();
     }
   }
 

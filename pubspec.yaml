@@ -11,7 +11,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   dio: ^5.7.0 # for downloading files
   permission_handler: ^11.3.1 # for handling storage permissions
-
+  device_info_plus: ^11.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
