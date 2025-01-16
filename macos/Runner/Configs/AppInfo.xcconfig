@@ -1,0 +1,14 @@
+
+
+
+
+
+
+
+PRODUCT_NAME = file_download
+
+
+PRODUCT_BUNDLE_IDENTIFIER = com.example.fileDownload
+
+
+PRODUCT_COPYRIGHT = Copyright © 2025 com.example. All rights reserved.
