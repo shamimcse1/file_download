@@ -47,11 +47,8 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
             onPressed: () async {
               FileDownloader fileDownloader = FileDownloader();
-              Random random = Random();
-              int randomNumber = random.nextInt(100);
-              var fileName = 'MyFIle$randomNumber.pdf';
               await fileDownloader.downloadFile(
-                  'https://gbihr.org/images/docs/test.pdf', fileName);
+                  'https://gbihr.org/images/docs/test.pdf');
             },
             child: const Text("Download File"),
           ),
@@ -67,7 +64,21 @@ class FileDownloader {
   final Dio _dio = Dio();
 
   // Save file to the Download folder
-  Future<void> downloadFile(String url, String fileName) async {
+  Future<void> downloadFile(String url, [String? fileName]) async {
+    fileName ??= Uri.parse(url).pathSegments.last;
+
+    // Path to the Download folder
+    final directory = Directory('/storage/emulated/0/Download');
+    final filePath = '${directory.path}/$fileName';
+    final file = File(filePath);
+
+    // Check if file already exists
+    if (await file.exists()) {
+      print("File already exists at $filePath");
+      return; // Exit the method
+    }
+
+
     // Request storage permissions
     final plugin = DeviceInfoPlugin();
     final android = await plugin.androidInfo;
